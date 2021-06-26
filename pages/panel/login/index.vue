@@ -4,10 +4,19 @@
       <h3>Login Admin Form</h3>
       <form @submit.prevent="onLogin()">
         <div class="form-group">
-          <input type="text" class="form-control" v-model="username" name="username" id="username" placeholder="Enter Username...">
+          <input type="text"
+                 class="form-control"
+                 v-model="username"
+                 name="username"
+                 id="username"
+                 placeholder="Enter Username...">
         </div>
         <div class="form-group">
-          <input type="password" class="form-control" v-model="password" id="password" placeholder="Enter Password...">
+          <input type="password"
+                 class="form-control"
+                 v-model="password"
+                 id="password"
+                 placeholder="Enter Password...">
         </div>
         <div class="form-group">
           <button type="submit" class="btn btn-primary">Login</button>
@@ -18,7 +27,8 @@
 </template>
 <script>
   export default {
-    middleware: 'isEmployeeLoggedIn',
+    //middleware: 'isEmployeeLoggedIn',
+    middleware: 'guest',
     layout: 'auth',
     name: 'index',
     data() {

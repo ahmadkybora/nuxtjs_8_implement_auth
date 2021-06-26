@@ -14,7 +14,8 @@
 
 <script>
   export default {
-    middleware: 'checkAuthEmployee',
+    //middleware: 'checkAuthEmployee',
+    middleware: 'auth',
     name: "index",
     layout: 'panel',
   }

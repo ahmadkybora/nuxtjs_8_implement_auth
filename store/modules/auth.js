@@ -37,9 +37,24 @@ const state = () => ({
         username: '',
     },
     isUserRegister: {},
+    /*auth: {
+        loggedIn: '',
+        user: {
+            first_name: '',
+            last_name: '',
+            username: ''
+        },
+    }*/
 });
 
 const getters = {
+    isAuthenticated(state) {
+        return state.auth.loggedIn
+    },
+    loggedInUser(state) {
+        return state.auth.user
+    },
+
     isAuthenticatedUser(state) {
         return state.tokenUser
     },
@@ -206,13 +221,14 @@ const actions = {
         })
     },
 
-    isUserLogin(context, payload) {
-        const login = {
-            username: payload.username,
-            password: payload.password,
-        };
-        Axios.post(Axios.defaults.baseURL + 'login', login)
-            .then(res => {
+    async isUserLogin(context, payload) {
+        try {
+            const login = {
+                username: payload.username,
+                password: payload.password,
+            };
+            await this.$axios.post('login', login);
+            /*.then(res => {
                 const user = res.data.data;
                 const tokenUser = user.accessToken;
                 const isLogin = {
@@ -220,32 +236,69 @@ const actions = {
                     first_name: user.first_name,
                     last_name: user.last_name,
                 };
-                context.state.isUserLogin.first_name = user.first_name;
-                context.state.isUserLogin.last_name = user.last_name;
-
-                let full_name = isLogin.first_name + ' ' + isLogin.last_name;
-                let username = isLogin.username;
-
-                window.localStorage.setItem('token-user', tokenUser);
-                window.localStorage.setItem('full_name', full_name);
-                window.localStorage.setItem('username', username);
-
-                if (window.localStorage.getItem('token-user') != null) {
-                    if (username) {
-                        this.$router.push('/');
-                        window.location.reload();
-                    } else {
-                        this.$router.push('/login');
-                        //location.reload();
-                    }
-                }
             })
             .catch(err => {
                 console.log(err);
-            })
+            });*/
+            const auth = await this.$auth.loginWith('local', {
+                data: {
+                    username: payload.username,
+                    password: payload.password,
+                },
+            });
+            //console.log(auth.data.data.first_name);
+            const loggedIn = true;
+            const user = {
+                first_name: auth.data.data.first_name,
+                last_name: auth.data.data.last_name,
+                username: auth.data.data.username,
+            };
+            context.isUserLogin = user.first_name;
+            context.isUserLogin = user.last_name;
+            context.isUserLogin = user.username;
+
+            console.log(user);
+            context.commit('isAuthenticated', loggedIn);
+            context.commit('loggedInUser', user);
+
+            this.$router.push('/')
+        } catch (e) {
+            this.error = e.response.data.message
+        }
+        /*context.state.isUserLogin.first_name = user.first_name;
+        context.state.isUserLogin.last_name = user.last_name;
+
+        let full_name = isLogin.first_name + ' ' + isLogin.last_name;
+        let username = isLogin.username;
+
+        window.localStorage.setItem('token-user', tokenUser);
+        window.localStorage.setItem('full_name', full_name);
+        window.localStorage.setItem('username', username);*/
+
+        /*if (window.localStorage.getItem('token-user') != null) {
+            if (username) {
+                this.$router.push('/');
+                window.location.reload();
+            } else {
+                this.$router.push('/login');
+                //location.reload();
+            }
+        }*/
+
+        /*try {
+            const login = {
+                username: payload.username,
+                password: payload.password,
+            };
+            let response = await this.$auth.loginWith('customStrategy', { data: login });
+            console.log(response)
+        } catch (err) {
+            console.log(err)
+        }*/
     },
-    isUserLogout(context) {
-        Axios.get(Axios.defaults.baseURL + 'logout', {
+    async isUserLogout(context) {
+        await this.$auth.logout();
+        /*Axios.get(Axios.defaults.baseURL + 'logout', {
             headers: {
                 Authorization: 'Bearer ' + context.state.tokenUser,
             }
@@ -258,11 +311,18 @@ const actions = {
                 window.location.reload();
             })
             .catch(err => {
-            })
+            })*/
     }
 };
 
 const mutations = {
+    isAuthenticated(state, payload) {
+        state.auth.loggedIn = payload.loggedIn;
+    },
+    loggedInUser(state, payload) {
+        state.auth.user = payload.user;
+        console.log(state.auth.user)
+    },
     accessToken(state, payload) {
         state.token = payload.token
     },

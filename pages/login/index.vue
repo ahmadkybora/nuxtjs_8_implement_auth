@@ -22,7 +22,8 @@
 </template>
 <script>
   export default {
-    middleware: 'isUserLoggedIn',
+    //middleware: 'isUserLoggedIn',
+    middleware: 'guest',
     layout: 'auth',
     name: 'Login',
     data() {

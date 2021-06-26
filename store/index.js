@@ -20,44 +20,53 @@ const employeeToken = window.localStorage.getItem('token-employee');
 const userToken = window.localStorage.getItem('token-user');
 
 if (employeeToken !== null && employeeToken !== undefined) {
-  Axios.defaults.headers.common.Authorization = `Bearer ${employeeToken}`;
-  Axios.defaults.headers.common.Accept = 'Application/json';
-  Axios.defaults.headers.common['X-Requested-With'] = 'XmlHttpRequest';
+    Axios.defaults.headers.common.Authorization = `Bearer ${employeeToken}`;
+    Axios.defaults.headers.common.Accept = 'Application/json';
+    Axios.defaults.headers.common['X-Requested-With'] = 'XmlHttpRequest';
 }
 
 if (userToken !== null && userToken !== undefined) {
-  Axios.defaults.headers.common.Authorization = `Bearer ${userToken}`;
-  Axios.defaults.headers.common.Accept = 'Application/json';
-  Axios.defaults.headers.common['X-Requested-With'] = 'XmlHttpRequest';
+    Axios.defaults.headers.common.Authorization = `Bearer ${userToken}`;
+    Axios.defaults.headers.common.Accept = 'Application/json';
+    Axios.defaults.headers.common['X-Requested-With'] = 'XmlHttpRequest';
 }
 
 const createStore = () => {
 
-  return new Vuex.Store({
-    state: () => ({
-/*      tokenEmployee: window.localStorage.getItem('token-employee'),
-      tokenUser: window.localStorage.getItem('token-user'),*/
-    }),
-    actions: {},
-    mutations: {},
-    getters: {
-/*      isAuthenticatedUser(state)
-      {
-        return state.tokenUser
-      }*/
-    },
-    modules: {
-      Auth,
-      Users,
-      Employees,
-      Products,
-      ProductCategories,
-      Articles,
-      ArticleCategories,
-      Brands,
-      Carts
-    }
-  })
+    return new Vuex.Store({
+        state: () => ({
+            /*      tokenEmployee: window.localStorage.getItem('token-employee'),
+                  tokenUser: window.localStorage.getItem('token-user'),*/
+            /*auth: {
+                loggedIn: '',
+                user: {
+                    username: 'ahmad'
+                },
+            }*/
+        }),
+        actions: {},
+        mutations: {},
+        getters: {
+            /*isAuthenticated(state) {
+                return state.auth.loggedIn
+            },
+
+            loggedInUser(state) {
+                return state.auth.user
+            }*/
+        },
+        modules: {
+            Auth,
+            Users,
+            Employees,
+            Products,
+            ProductCategories,
+            Articles,
+            ArticleCategories,
+            Brands,
+            Carts
+        }
+    })
 };
 
 export default createStore;

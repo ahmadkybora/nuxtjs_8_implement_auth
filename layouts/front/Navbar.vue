@@ -18,6 +18,9 @@
         <!--//-->
         <div class="row">
             <div v-if="isAuthenticated" class="offset-lg-6 col-lg-6 offset-md-6 col-md-6">
+                <a class="navbar-link">
+                    {{ loggedInUser.username }}
+                </a>
                 <button @click="isUserLogout()" class="btn btn-warning" style="border-radius: 15px;">Logout</button>
                 <button class="btn btn-success" style="border-radius: 15px;">Profile</button>
                 <nuxt-link to="/profile/cart"><i class="fa fa-cart-plus fa-2x text-secondary" aria-hidden="true"></i>
@@ -35,6 +38,7 @@
 
 <script>
     import {mapState} from 'vuex';
+    //import { mapGetters } from 'vuex'
 
     export default {
         name: 'Navbar',
@@ -44,10 +48,14 @@
             }
         },
         computed: {
-            ...mapState({
+            /*...mapState({
                 fullName: state => state.Auth.isUser,
                 isAuthenticated: state => state.Auth.tokenUser
-            }),
+            }),*/
+            ...mapState({
+                isAuthenticated: state => state.Auth.isAuthenticated,
+                loggedInUser: state => state.Auth.loggedInUser,
+            })
         },
         methods: {
             isUserLogout() {
@@ -55,6 +63,8 @@
             }
         },
         mounted() {
+            this.$store.dispatch('Auth/isUserLogin');
+            return this.$store.dispatch('Auth/isUserLogin');
             //console.log(this.fullName)
         }
     }
@@ -69,6 +79,7 @@
         background-color: aquamarine;
         border-radius: 15px;
     }
+
     .input-group > .form-control, .input-group > .form-control-plaintext, .input-group > .custom-select, .input-group > .custom-file {
         flex: auto;
     }
