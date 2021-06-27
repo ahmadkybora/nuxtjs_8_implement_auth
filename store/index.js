@@ -20,12 +20,16 @@ const employeeToken = window.localStorage.getItem('token-employee');
 const userToken = window.localStorage.getItem('token-user');
 
 if (employeeToken !== null && employeeToken !== undefined) {
+    this.$axios.setHeader('Authorization', `Bearer ${employeeToken}`);
+    this.$axios.setHeader('Accept', 'Application/json');
     Axios.defaults.headers.common.Authorization = `Bearer ${employeeToken}`;
     Axios.defaults.headers.common.Accept = 'Application/json';
     Axios.defaults.headers.common['X-Requested-With'] = 'XmlHttpRequest';
 }
 
 if (userToken !== null && userToken !== undefined) {
+    this.$axios.setHeader('Authorization', `Bearer ${userToken}`);
+    this.$axios.setHeader('Accept', 'Application/json');
     Axios.defaults.headers.common.Authorization = `Bearer ${userToken}`;
     Axios.defaults.headers.common.Accept = 'Application/json';
     Axios.defaults.headers.common['X-Requested-With'] = 'XmlHttpRequest';

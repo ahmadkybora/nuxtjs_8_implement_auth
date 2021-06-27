@@ -28,7 +28,7 @@
 <script>
   export default {
     //middleware: 'isEmployeeLoggedIn',
-    middleware: 'guest',
+    //middleware: 'guest',
     layout: 'auth',
     name: 'index',
     data() {

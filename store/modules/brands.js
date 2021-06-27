@@ -29,7 +29,8 @@ const getters = {
 const actions = {
 
     async allBrands(context, all = 'all') {
-        await Axios.get(Axios.defaults.baseURL + `panel/brands?all=${all}`)
+        console.log(this.$auth.strategy.token.get());
+        await this.$axios.get(`panel/brands?all=${all}`)
             .then(res => {
                 const allBrands = res.data.data;
                 context.commit('allBrands', allBrands);
@@ -51,7 +52,7 @@ const actions = {
     },
 
     async getBrands(context, page = 1) {
-        await Axios.get(Axios.defaults.baseURL + `panel/brands?page=${page}`)
+        await this.$axios.get(`panel/brands?page=${page}`)
             .then(res => {
                 const getBrands = res.data.data;
                 console.log(getBrands);

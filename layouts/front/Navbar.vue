@@ -17,9 +17,9 @@
         </form>
         <!--//-->
         <div class="row">
-            <div v-if="isAuthenticated" class="offset-lg-6 col-lg-6 offset-md-6 col-md-6">
+            <div v-if="$auth.loggedIn" class="offset-lg-6 col-lg-6 offset-md-6 col-md-6">
                 <a class="navbar-link">
-                    {{ loggedInUser.username }}
+                    {{ username }}
                 </a>
                 <button @click="isUserLogout()" class="btn btn-warning" style="border-radius: 15px;">Logout</button>
                 <button class="btn btn-success" style="border-radius: 15px;">Profile</button>
@@ -48,14 +48,19 @@
             }
         },
         computed: {
-            /*...mapState({
-                fullName: state => state.Auth.isUser,
-                isAuthenticated: state => state.Auth.tokenUser
-            }),*/
+
             ...mapState({
+                username: state => state.Auth.username,
+                /*fullName: state => state.Auth.isUser,
+                isAuthenticated: state => state.Auth.tokenUser*/
+            }),
+            /*...mapState({
                 isAuthenticated: state => state.Auth.isAuthenticated,
                 loggedInUser: state => state.Auth.loggedInUser,
-            })
+            })*/
+            /*user(){
+                return window.localStorage.getItem(user);
+            }*/
         },
         methods: {
             isUserLogout() {
@@ -63,6 +68,10 @@
             }
         },
         mounted() {
+            //console.log(this.$auth.user);
+            //this.$auth.logout();
+/*            console.log(this.$store.state.auth.user);
+            console.log(this.$store.state.auth);*/
             this.$store.dispatch('Auth/isUserLogin');
             return this.$store.dispatch('Auth/isUserLogin');
             //console.log(this.fullName)

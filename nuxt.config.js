@@ -50,28 +50,172 @@ export default {
 
     // Axios module configuration: https://go.nuxtjs.dev/config-axios
     axios: {
-        baseURL: 'http://localhost:3001/api/'
+        baseURL: 'http://localhost:3001/api/',
     },
+    /*
+ ** Auth module configuration
+ */
+    /*auth: {
+        strategies: {
+            local: {
+                token: {
+                    property: 'token',
+                    global: true,
+                    // required: true,
+                    // type: 'Bearer'
+                },
+                user: {
+                    property: 'user',
+                    // autoFetch: true
+                },
+                endpoints: {
+                    login: {
+                        url: '/login',
+                        method: 'post'
+                    },
+                    logout: {
+                        url: '/logout',
+                        method: 'post'
+                    },
+                    //user: {url: '/api/auth/user', method: 'get'}
+                }
+            }
+        }
+    },*/
 
-    auth: {
+    /*auth: {
+        strategies: {
+            local: {
+                scheme: 'refresh',
+                token: {
+                    property: 'access_token',
+                    maxAge: 1800,
+                    global: true,
+                    // type: 'Bearer'
+                },
+                refreshToken: {
+                    property: 'refresh_token',
+                    data: 'refresh_token',
+                    maxAge: 60 * 60 * 24 * 30
+                },
+                user: {
+                    property: 'user',
+                    // autoFetch: true
+                },
+                endpoints: {
+                    login: {
+                        url: '/login',
+                        method: 'post'
+                    },
+                    refresh: {
+                        url: '/refresh',
+                        method: 'post'
+                    },
+                    user: {
+                        url: '/user',
+                        method: 'get'
+                    },
+                    logout: {
+                        url: '/logout',
+                        method: 'post'
+                    }
+                },
+                // autoLogout: false
+            }
+        }
+    },*/
+
+    /*auth: {
+        strategies: {
+            local: {
+                token: {
+                    property: 'accessToken',
+                    required: true,
+                    type: 'Bearer'
+                },
+                user: {
+                    property: false, // <--- Default "user"
+                    autoFetch: true
+                },
+                endpoints: {
+                    login: { url: '/login', method: 'post' },
+                    logout: { url: '/logout', method: 'post' },
+                    user: { url: '/user', method: 'get' }
+                }
+            }
+        }
+    },*/
+
+    /*auth: {
         strategies: {
             local: {
                 endpoints: {
                     login: {
-                        url: 'login',
+                        url: '/login',
                         method: 'post',
-                        propertyName: 'data.token'
+                        propertyName: 'accessToken'
+                    },
+                    logout: {
+                        url: '/logout',
+                        method: 'post'
                     },
                     user: {
-                        url: 'me',
-                        method: 'get',
-                        propertyName: 'data'
+                        url: '/auth/me',
+                        method: 'post',
+                        propertyName: false
                     },
-                    logout: false
+                    tokenRequired: true
                 }
             }
         }
+    },*/
+
+    // this is
+    auth: {
+        /*redirect: {
+            login: '/login',
+            logout: '/logout',
+            home: '/'
+        },*/
+        strategies: {
+            local: {
+                endpoints: {
+                    login: {
+                        url: "/login",
+                        method: "post",
+                        propertyName: "data.token",
+                    },
+                    logout: false,
+                    user: false,
+                },
+                tokenType: '',
+                tokenName: 'x-auth',
+                autoFetchUser: false
+            },
+        },
     },
+
+    /*
+        auth: {
+            strategies: {
+                local: {
+                    endpoints: {
+                        login: {
+                            url: 'login',
+                            method: 'post',
+                            propertyName: 'data.data.data.accessToken',
+                        },
+                        user: {
+                            url: 'me',
+                            method: 'get',
+                            propertyName: 'data'
+                        },
+                        logout: false
+                    }
+                }
+            }
+        },
+    */
 
     /*auth: {
         strategies: {
@@ -118,9 +262,10 @@ export default {
     /*
     router middleware log
      */
-    router: {
-        middleware: ['auth']
-    },
+    /*router: {
+        //extendRoutes(routes, resolve) {},
+        //middleware: ['auth']
+    },*/
 
     serverMiddleware: [
         /*bodyParser.json(),

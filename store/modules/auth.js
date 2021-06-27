@@ -5,24 +5,27 @@ import Swal from "sweetalert2";
 const employeeToken = window.localStorage.getItem('token-employee');
 const userToken = window.localStorage.getItem('user-token');
 
-if (employeeToken) {
+if (employeeToken !== null && employeeToken !== undefined) {
+    this.$axios.setHeader('Authorization', `Bearer ${employeeToken}`);
+    this.$axios.setHeader('Accept', 'Application/json');
     Axios.defaults.headers.common.Authorization = `Bearer ${employeeToken}`;
+    Axios.defaults.headers.common.Accept = 'Application/json';
     Axios.defaults.headers.common['X-Requested-With'] = 'XmlHttpRequest';
-    Axios.defaults.headers.common['Content-type'] = 'Application/json';
-    Axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 }
 
-if (userToken) {
+if (userToken !== null && userToken !== undefined) {
+    this.$axios.setHeader('Authorization', `Bearer ${userToken}`);
+    this.$axios.setHeader('Accept', 'Application/json');
     Axios.defaults.headers.common.Authorization = `Bearer ${userToken}`;
+    Axios.defaults.headers.common.Accept = 'Application/json';
     Axios.defaults.headers.common['X-Requested-With'] = 'XmlHttpRequest';
-    Axios.defaults.headers.common['Content-type'] = 'Application/json';
-    Axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 }*/
 
 const state = () => ({
     tokenEmployee: window.localStorage.getItem('token-employee'),
     tokenUser: window.localStorage.getItem('token-user'),
     isUser: window.localStorage.getItem('is-user'),
+    username: window.localStorage.getItem('username'),
     is_employee: window.localStorage.getItem('is-employee'),
     isEmployee: window.localStorage.getItem('is-admin'),
     isEmployeeLogin: {
@@ -90,53 +93,74 @@ const actions = {
             });
 
     },
-    isEmployeeLogin(context, payload) {
+    async isEmployeeLogin(context, payload) {
         const login = {
             username: payload.username,
             password: payload.password,
         };
-        Axios.post(Axios.defaults.baseURL + 'login', login)
-            .then(res => {
-                const employee = res.data.data;
-                const tokenEmployee = employee.accessToken;
-                const isLogin = {
-                    username: employee.username,
-                    first_name: employee.first_name,
-                    last_name: employee.last_name,
-                };
-                context.state.isEmployeeLogin.first_name = employee.first_name;
-                context.state.isEmployeeLogin.last_name = employee.last_name;
-                context.state.isEmployeeLogin.username = employee.username;
+        await this.$axios.post('login', login);
+        const auth = await this.$auth.loginWith('local', {data: login});
+        if (auth) {
+            const username = auth.data.data.username;
+            const token = auth.data.data.accessToken;
+            window.localStorage.setItem('username', username);
+            window.localStorage.setItem('is-admin', true);
+            await this.$auth.setUser(username);
+            await this.$auth.setUserToken(token);
+            await this.$router.push('/panel/dashboard');
+        }
+        /*.then(res => {
+            const employee = res.data.data;
+            const tokenEmployee = employee.accessToken;
+            const isLogin = {
+                username: employee.username,
+                first_name: employee.first_name,
+                last_name: employee.last_name,
+            };
+            context.state.isEmployeeLogin.first_name = employee.first_name;
+            context.state.isEmployeeLogin.last_name = employee.last_name;
+            context.state.isEmployeeLogin.username = employee.username;
 
-                let is_employee = isLogin.first_name + ' ' + isLogin.last_name;
-                let is_admin = isLogin.username;
+            let is_employee = isLogin.first_name + ' ' + isLogin.last_name;
+            let is_admin = isLogin.username;
 
-                window.localStorage.setItem('token-employee', tokenEmployee);
-                window.localStorage.setItem('is-admin', is_admin);
-                window.localStorage.setItem('is-employee', is_employee);
+            window.localStorage.setItem('token-employee', tokenEmployee);
+            window.localStorage.setItem('is-admin', is_admin);
+            window.localStorage.setItem('is-employee', is_employee);
 
-                //window.localStorage.setItem('token-employee', JSON.stringify(isLogin));
+            //window.localStorage.setItem('token-employee', JSON.stringify(isLogin));
 
-                //if (JSON.parse(window.localStorage.getItem('token')) != null)
-                if (window.localStorage.getItem('token-employee') != null && window.localStorage.getItem('is-admin') != null) {
-                    if (is_admin === 'admin') {
-                        this.$router.push('/panel/dashboard');
-                        //location.reload();
-                    } else {
-                        this.$router.push('/panel/dashboard');
-                        //location.reload();
-                    }
+            //if (JSON.parse(window.localStorage.getItem('token')) != null)
+            if (window.localStorage.getItem('token-employee') != null && window.localStorage.getItem('is-admin') != null) {
+                if (is_admin === 'admin') {
+                    this.$router.push('/panel/dashboard');
+                    //location.reload();
+                } else {
+                    this.$router.push('/panel/dashboard');
+                    //location.reload();
                 }
-            })
-            .catch(err => {
-                console.log(err);
-            })
+            }
+        })
+        .catch(err => {
+            console.log(err);
+        })*/
     },
-    isEmployeeLogout(context) {
-        window.localStorage.removeItem('token-employee');
+    async isEmployeeLogout(context) {
+        /*window.localStorage.removeItem('token-employee');
         window.localStorage.removeItem('is-admin');
-        window.location.reload();
-        Axios.get(Axios.defaults.baseURL + 'panel/logout', {
+        window.location.reload();*/
+
+        await this.$axios.get('logout');
+
+        window.localStorage.removeItem('username');
+        window.localStorage.removeItem('is-admin');
+
+        delete window.localStorage.getItem('username');
+        delete window.localStorage.getItem('is-admin');
+
+        await this.$auth.logout();
+
+        /*await this.$axios.get('logout', {
             headers: {
                 Authorization: 'Bearer ' + context.state.tokenEmployee,
             }
@@ -144,12 +168,16 @@ const actions = {
             .then(() => {
                 window.localStorage.removeItem('token-employee');
                 window.localStorage.removeItem('is-admin');
+                window.localStorage.removeItem('is-employee');
+
                 delete context.state.tokenEmployee;
                 delete context.state.isEmployee;
+                delete context.state.is_employee;
+
                 window.location.reload();
             })
             .catch(err => {
-            })
+            })*/
     },
     isUserRegister(context, payload) {
         const register = {
@@ -240,30 +268,43 @@ const actions = {
             .catch(err => {
                 console.log(err);
             });*/
-            const auth = await this.$auth.loginWith('local', {
-                data: {
-                    username: payload.username,
-                    password: payload.password,
-                },
-            });
-            //console.log(auth.data.data.first_name);
-            const loggedIn = true;
-            const user = {
-                first_name: auth.data.data.first_name,
-                last_name: auth.data.data.last_name,
-                username: auth.data.data.username,
-            };
-            context.isUserLogin = user.first_name;
-            context.isUserLogin = user.last_name;
-            context.isUserLogin = user.username;
+            const auth = await this.$auth.loginWith('local', {data: login});
+            if (auth) {
+                const username = auth.data.data.username;
+                const token = auth.data.data.accessToken;
+                window.localStorage.setItem('username', username);
+                //window.localStorage.getItem(user);
+                /*console.log(user);
+                console.log(token);*/
+                //this.$auth.user = user;
+                await this.$auth.setUser(username);
+                await this.$auth.setUserToken(token);
+                //console.log(this.$auth.user);
+                //this.$auth.strategy.token.set(token);
+                /*console.log(this.$auth.user);
+                this.$auth.setUserToken(token);*/
+                //this.$auth.setStrategy('local');
+                //this.$auth.loggedIn = true;
+                //console.log(this.$auth);
+                /*const loggedIn = true;
+                const user = {
+                    first_name: auth.data.data.first_name,
+                    last_name: auth.data.data.last_name,
+                    username: auth.data.data.username,
+                };
+                context.isUserLogin = user.first_name;
+                context.isUserLogin = user.last_name;
+                context.isUserLogin = user.username;
 
-            console.log(user);
-            context.commit('isAuthenticated', loggedIn);
-            context.commit('loggedInUser', user);
+                console.log(user);
+                context.commit('isAuthenticated', loggedIn);
+                context.commit('loggedInUser', user);*/
 
-            this.$router.push('/')
+                this.$router.push('/')
+            }
         } catch (e) {
-            this.error = e.response.data.message
+            console.log(e);
+            //this.error = e.response.data.message
         }
         /*context.state.isUserLogin.first_name = user.first_name;
         context.state.isUserLogin.last_name = user.last_name;
@@ -297,6 +338,14 @@ const actions = {
         }*/
     },
     async isUserLogout(context) {
+        await this.$axios.get('logout');
+        window.localStorage.removeItem('username');
+        delete window.localStorage.getItem('username');
+        /*await this.$axios.get('logout', {
+            headers: {
+                Authorization: 'Bearer ' + this.$auth.strategy.token.get(),
+            }
+        });*/
         await this.$auth.logout();
         /*Axios.get(Axios.defaults.baseURL + 'logout', {
             headers: {
@@ -316,13 +365,13 @@ const actions = {
 };
 
 const mutations = {
-    isAuthenticated(state, payload) {
+    /*isAuthenticated(state, payload) {
         state.auth.loggedIn = payload.loggedIn;
     },
     loggedInUser(state, payload) {
         state.auth.user = payload.user;
         console.log(state.auth.user)
-    },
+    },*/
     accessToken(state, payload) {
         state.token = payload.token
     },

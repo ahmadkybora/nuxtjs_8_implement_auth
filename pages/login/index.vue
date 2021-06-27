@@ -23,7 +23,7 @@
 <script>
   export default {
     //middleware: 'isUserLoggedIn',
-    middleware: 'guest',
+    //middleware: 'guest',
     layout: 'auth',
     name: 'Login',
     data() {
