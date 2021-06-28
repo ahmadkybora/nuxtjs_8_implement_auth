@@ -26,6 +26,7 @@ const state = () => ({
     tokenUser: window.localStorage.getItem('token-user'),
     isUser: window.localStorage.getItem('is-user'),
     username: window.localStorage.getItem('username'),
+    full_name: window.localStorage.getItem('full_name'),
     is_employee: window.localStorage.getItem('is-employee'),
     isEmployee: window.localStorage.getItem('is-admin'),
     isEmployeeLogin: {
@@ -101,10 +102,16 @@ const actions = {
         await this.$axios.post('login', login);
         const auth = await this.$auth.loginWith('local', {data: login});
         if (auth) {
+
             const username = auth.data.data.username;
+            const full_name = auth.data.data.first_name + ' ' + auth.data.data.last_name;
             const token = auth.data.data.accessToken;
+            const is_admin = true;
+
             window.localStorage.setItem('username', username);
-            window.localStorage.setItem('is-admin', true);
+            window.localStorage.setItem('full_name', full_name);
+            window.localStorage.setItem('is-admin', is_admin);
+
             await this.$auth.setUser(username);
             await this.$auth.setUserToken(token);
             await this.$router.push('/panel/dashboard');
@@ -270,9 +277,13 @@ const actions = {
             });*/
             const auth = await this.$auth.loginWith('local', {data: login});
             if (auth) {
+
                 const username = auth.data.data.username;
+                const full_name = auth.data.data.first_name + ' ' + auth.data.data.last_name;
                 const token = auth.data.data.accessToken;
+
                 window.localStorage.setItem('username', username);
+                window.localStorage.setItem('full_name', full_name);
                 //window.localStorage.getItem(user);
                 /*console.log(user);
                 console.log(token);*/
@@ -339,8 +350,12 @@ const actions = {
     },
     async isUserLogout(context) {
         await this.$axios.get('logout');
+
         window.localStorage.removeItem('username');
+        window.localStorage.removeItem('full_name');
+
         delete window.localStorage.getItem('username');
+        delete window.localStorage.getItem('full_name');
         /*await this.$axios.get('logout', {
             headers: {
                 Authorization: 'Bearer ' + this.$auth.strategy.token.get(),

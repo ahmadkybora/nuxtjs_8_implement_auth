@@ -971,7 +971,7 @@
                     })
                 //}
             },
-            userUpdate(user) {
+            /*userUpdate(user) {
                 const isUpdate = {
                     id: user.id,
                     first_name: user.first_name,
@@ -987,7 +987,7 @@
                     work_address: user.work_address,
                 };
                 return this.$store.dispatch('Users/isUserUpdate', isUpdate)
-            },
+            },*/
         }
     }
 </script>

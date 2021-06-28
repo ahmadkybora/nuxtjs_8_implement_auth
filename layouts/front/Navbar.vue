@@ -17,13 +17,32 @@
         </form>
         <!--//-->
         <div class="row">
-            <div v-if="$auth.loggedIn" class="offset-lg-6 col-lg-6 offset-md-6 col-md-6">
-                <a class="navbar-link">
-                    {{ username }}
-                </a>
+            <div v-if="$auth.loggedIn">
                 <button @click="isUserLogout()" class="btn btn-warning" style="border-radius: 15px;">Logout</button>
-                <button class="btn btn-success" style="border-radius: 15px;">Profile</button>
-                <nuxt-link to="/profile/cart"><i class="fa fa-cart-plus fa-2x text-secondary" aria-hidden="true"></i>
+                <button class="btn btn-success" style="border-radius: 15px;">Welcome: {{ username }}</button>
+                <ul class="navbar-nav justify-content-center w-100 list-unstyled my-3">
+                    <li class="nav-item mx-5 dropdown">
+                        <a href="#"
+                           class="nav-link dropdown-toggle"
+                           data-toggle="dropdown">
+                            Profile
+                        </a>
+                        <div class="dropdown-menu">
+                            <div v-for="item in items"
+                                 :key="item.id">
+                                <nuxt-link :to="item.route"
+                                           class="dropdown-item"
+                                           :class="item.color">
+                                    <i :class="item.icon"></i>
+                                    {{ item.name }}
+                                </nuxt-link>
+                                <hr>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <nuxt-link to="/profile/cart"><i class="fa fa-cart-plus fa-2x text-secondary"
+                                                 aria-hidden="true"></i>
                 </nuxt-link>
             </div>
             <div v-else>
@@ -37,6 +56,7 @@
 </template>
 
 <script>
+    import ProfileItems from '../../api/front/ProfileItems';
     import {mapState} from 'vuex';
     //import { mapGetters } from 'vuex'
 
@@ -45,10 +65,10 @@
         data() {
             return {
                 search: '',
+                items: ProfileItems,
             }
         },
         computed: {
-
             ...mapState({
                 username: state => state.Auth.username,
                 /*fullName: state => state.Auth.isUser,
@@ -68,10 +88,11 @@
             }
         },
         mounted() {
+
             //console.log(this.$auth.user);
             //this.$auth.logout();
-/*            console.log(this.$store.state.auth.user);
-            console.log(this.$store.state.auth);*/
+            /*            console.log(this.$store.state.auth.user);
+                        console.log(this.$store.state.auth);*/
             this.$store.dispatch('Auth/isUserLogin');
             return this.$store.dispatch('Auth/isUserLogin');
             //console.log(this.fullName)
