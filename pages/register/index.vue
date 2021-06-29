@@ -107,7 +107,7 @@
 <script>
     export default {
         //middleware: 'isEmployeeLoggedIn',
-        middleware: 'guest',
+        //middleware: 'guest',
         name: "UserRegister",
         layout: 'auth',
         data () {

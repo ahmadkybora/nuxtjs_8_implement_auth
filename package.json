@@ -27,6 +27,7 @@
     "nuxt": "^2.14.12",
     "nuxt-dropzone": "^1.0.4",
     "nuxt-moment": "^1.0.5",
+    "phaser": "^3.55.2",
     "popper.js": "^1.16.1",
     "sequelize": "^6.5.0",
     "sweetalert2": "^10.15.7",

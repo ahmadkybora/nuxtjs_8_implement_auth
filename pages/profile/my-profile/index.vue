@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="jumbotron shadow-lg">
-                        <h3>EDit Profile</h3>
+                        <h3>Edit Profile</h3>
 
                         <form @submit.prevent="userUpdate(user)">
                             <!---------------------validation------------------->
@@ -409,21 +409,7 @@
         name: "index",
         data() {
             return {
-                user: {
-                    id: '',
-                    first_name: '',
-                    last_name: '',
-                    username: '',
-                    email: '',
-                    mobile: '',
-                    home_phone: '',
-                    zip_code: '',
-                    password: '',
-                    confirmation_password: '',
-                    home_address: '',
-                    work_address: '',
-                    image: '',
-                },
+                image: '',
                 isSelected: false,
                 showImage: '',
                 submitStatus: '',
@@ -504,9 +490,9 @@
         },
         methods: {
             onFileSelected(event) {
-                this.user.image = event.target.files[0];
+                this.image = event.target.files[0];
                 let fileReader = new FileReader();
-                fileReader.readAsDataURL(this.user.image);
+                fileReader.readAsDataURL(this.image);
                 fileReader.onload = (e) => {
                     this.showImage = e.target.result;
                 };
